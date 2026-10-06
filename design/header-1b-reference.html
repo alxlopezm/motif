@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pattern Review — Header 1b (reference)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#E1242A; --red-hover:#BD120A; --red-pressed:#891515;
+    --ink:#000000; --graphite:#34373F; --white:#FFFFFF;
+    --mist:#EDF2F4; --rule:#D1D8E0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--white);font-family:'Archivo',system-ui,sans-serif}
+  button{font-family:inherit}
+  :focus-visible{outline:2px solid var(--red);outline-offset:-2px}
+
+  .hdr{height:64px;display:flex;align-items:stretch;background:var(--white);border-bottom:2px solid var(--graphite);white-space:nowrap}
+  .hdr-brand{display:flex;align-items:center;gap:12px;padding:0 32px;min-width:240px;border-right:2px solid var(--rule);text-decoration:none}
+  .hdr-brand-mark{width:10px;height:28px;background:var(--red)}
+  .hdr-brand-text{display:flex;flex-direction:column;gap:3px;line-height:1}
+  .hdr-kicker{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--red-pressed)}
+  .hdr-title{font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+
+  .hdr-nav{display:flex;align-items:stretch;flex:1}
+  .hdr-link{position:relative;display:flex;align-items:center;gap:8px;min-width:136px;padding:0 24px;border:0;border-right:2px solid var(--mist);background:var(--white);color:var(--graphite);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none}
+  .hdr-link:hover{background:var(--mist)}
+  .hdr-link[aria-current="page"]{color:var(--red);font-weight:700}
+  .hdr-link[aria-current="page"]::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:4px;background:var(--red)}
+  .hdr-count{background:var(--red);color:var(--white);font-size:11px;font-weight:700;padding:2px 6px;line-height:1.2}
+
+  .hdr-user{display:flex;align-items:center;gap:20px;padding:0 24px;border-left:2px solid var(--rule)}
+  .hdr-user-text{display:flex;flex-direction:column;gap:2px}
+  .hdr-user-name{font-size:14px;font-weight:600;color:var(--ink)}
+  .hdr-user-role{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--graphite)}
+  .hdr-avatar{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--graphite);color:var(--white);font-size:12px;font-weight:700}
+
+  .hdr-signout{display:flex;align-items:center;justify-content:space-between;gap:24px;min-width:148px;padding:0 20px;border:0;background:var(--red);color:var(--white);font-size:14px;font-weight:600;cursor:pointer}
+  .hdr-signout:hover{background:var(--red-hover)}
+  .hdr-signout:active{background:var(--red-pressed)}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <a class="hdr-brand" href="/">
+    <span class="hdr-brand-mark" aria-hidden="true"></span>
+    <span class="hdr-brand-text">
+      <span class="hdr-kicker">Architecture</span>
+      <span class="hdr-title">Pattern Review</span>
+    </span>
+  </a>
+  <nav class="hdr-nav" aria-label="Primary">
+    <a class="hdr-link" href="/patterns" aria-current="page">Patterns</a>
+    <a class="hdr-link" href="/review-queue">Review queue <span class="hdr-count" aria-label="7 pending">7</span></a>
+    <a class="hdr-link" href="/users">Users</a>
+    <a class="hdr-link" href="/roles">Roles</a>
+  </nav>
+  <div class="hdr-user">
+    <div class="hdr-user-text">
+      <span class="hdr-user-name">Alejandro Lopez</span>
+      <span class="hdr-user-role">ARB member</span>
+    </div>
+    <div class="hdr-avatar" aria-hidden="true">AL</div>
+  </div>
+  <button class="hdr-signout" type="button">Sign out
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M9 21H5V3h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+  </button>
+</header>
+<script>
+  document.querySelectorAll('.hdr-link').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.hdr-link').forEach(x => x.removeAttribute('aria-current'));
+    a.setAttribute('aria-current', 'page');
+  }));
+</script>
+</body>
+</html>

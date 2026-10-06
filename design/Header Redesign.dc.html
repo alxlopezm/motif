@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/modernist-4804a1b0-ecde-4a67-8216-0370002e35b3/styles.css">
+<script src="_ds/modernist-4804a1b0-ecde-4a67-8216-0370002e35b3/_ds_bundle.js"></script>
+<style>body{margin:0;background:#EDF2F4;font-family:var(--font-body)} a{color:#E1242A} a:hover{color:#BD120A} button{font-family:inherit} header *{white-space:nowrap} button:focus-visible{outline:2px solid #E1242A;outline-offset:-2px}</style>
+</helmet>
+<section style="padding:64px;display:flex;flex-direction:column;gap:32px;">
+  <div style="display:flex;flex-direction:column;gap:8px;border-bottom:2px solid #34373F;padding-bottom:16px;max-width:1440px;">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#891515;font-weight:600;">Turn 1</div>
+    <div style="font-size:32px;font-weight:700;color:#000000;letter-spacing:-0.01em;">Pattern Review — header options</div>
+    <div style="font-size:15px;color:#34373F;">Click nav items to see the active state. Tweaks: queue count, active indicator.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:48px;">
+
+    <div id="1a" style="width:1440px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;gap:12px;align-items:center;"><span style="background:#000000;color:#FFFFFF;font-size:13px;font-weight:700;padding:4px 8px;">1a</span><span style="font-size:14px;color:#34373F;">Graphite — refined dark bar, red underline for the active page</span></div>
+      <div style="background:#FFFFFF;">
+        <header style="height:64px;background:#34373F;border-top:3px solid #E1242A;display:flex;align-items:stretch;padding:0 32px;">
+          <div style="display:flex;align-items:center;gap:12px;padding-right:32px;border-right:2px solid #450A0A;">
+            <div style="width:28px;height:28px;background:#E1242A;display:flex;align-items:flex-end;padding:4px;box-sizing:border-box;color:#FFFFFF;font-size:11px;font-weight:800;">PR</div>
+            <div style="font-size:17px;font-weight:700;color:#FFFFFF;letter-spacing:-0.01em;">Pattern <span style="color:#F78C85;">Review</span></div>
+          </div>
+          <nav style="display:flex;align-items:stretch;padding-left:16px;flex:1;">
+            <sc-for list="{{ navA }}" as="it" hint-placeholder-count="4">
+              <button onClick="{{ it.onClick }}" style="position:relative;border:0;background:{{ it.bg }};color:{{ it.color }};font-size:14px;font-weight:{{ it.weight }};padding:0 18px;cursor:pointer;display:flex;align-items:center;gap:8px;" style-hover="color:#FFFFFF;">
+                {{ it.label }}
+                <sc-if value="{{ it.showCount }}" hint-placeholder-val="{{ false }}"><span style="background:#E1242A;color:#FFFFFF;font-size:11px;font-weight:700;padding:2px 6px;">{{ queueCount }}</span></sc-if>
+                <span style="position:absolute;left:18px;right:18px;bottom:0;height:3px;background:{{ it.bar }};"></span>
+              </button>
+            </sc-for>
+          </nav>
+          <div style="display:flex;align-items:center;gap:20px;padding-left:24px;border-left:2px solid #450A0A;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;background:#891515;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">AL</div>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:14px;font-weight:600;color:#FFFFFF;">Alejandro Lopez</span>
+                <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#a1b1c4;">ARB member</span>
+              </div>
+            </div>
+            <button style="height:36px;border:0;background:#FFFFFF;color:#34373F;font-size:13px;font-weight:600;padding:0 12px 0 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:112px;cursor:pointer;" style-hover="background:#EDF2F4;" style-active="background:#D1D8E0;">Sign out<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M9 21H5V3h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg></button>
+          </div>
+        </header>
+        <div style="height:72px;"></div>
+      </div>
+    </div>
+
+    <div id="1b" style="width:1440px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;gap:12px;align-items:center;"><span style="background:#000000;color:#FFFFFF;font-size:13px;font-weight:700;padding:4px 8px;">1b</span><span style="font-size:14px;color:#34373F;">Paper — white bar on a visible grid, ink rules, red primary action</span></div>
+      <div style="background:#FFFFFF;">
+        <header style="height:64px;background:#FFFFFF;border-bottom:2px solid #34373F;display:flex;align-items:stretch;">
+          <div style="display:flex;align-items:center;gap:12px;padding:0 32px;border-right:2px solid #D1D8E0;min-width:240px;box-sizing:border-box;">
+            <div style="width:10px;height:28px;background:#E1242A;"></div>
+            <div style="display:flex;flex-direction:column;line-height:1;gap:3px;">
+              <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#891515;font-weight:600;">Architecture</span>
+              <span style="font-size:18px;font-weight:800;color:#000000;letter-spacing:-0.01em;">Pattern Review</span>
+            </div>
+          </div>
+          <nav style="display:flex;align-items:stretch;flex:1;">
+            <sc-for list="{{ navB }}" as="it" hint-placeholder-count="4">
+              <button onClick="{{ it.onClick }}" style="position:relative;border:0;border-right:2px solid #EDF2F4;background:{{ it.bg }};color:{{ it.color }};font-size:14px;font-weight:{{ it.weight }};padding:0 24px;cursor:pointer;display:flex;align-items:center;gap:8px;min-width:136px;" style-hover="background:#EDF2F4;">
+                {{ it.label }}
+                <sc-if value="{{ it.showCount }}" hint-placeholder-val="{{ false }}"><span style="background:#E1242A;color:#FFFFFF;font-size:11px;font-weight:700;padding:2px 6px;">{{ queueCount }}</span></sc-if>
+                <span style="position:absolute;left:0;right:0;bottom:-2px;height:4px;background:{{ it.bar }};"></span>
+              </button>
+            </sc-for>
+          </nav>
+          <div style="display:flex;align-items:center;gap:20px;padding:0 24px;border-left:2px solid #D1D8E0;">
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:14px;font-weight:600;color:#000000;">Alejandro Lopez</span>
+              <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#34373F;">ARB member</span>
+            </div>
+            <div style="width:36px;height:36px;background:#34373F;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">AL</div>
+          </div>
+          <button style="border:0;background:#E1242A;color:#FFFFFF;font-size:14px;font-weight:600;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:24px;min-width:148px;cursor:pointer;" style-hover="background:#BD120A;" style-active="background:#891515;">Sign out<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M9 21H5V3h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg></button>
+        </header>
+        <div style="height:72px;"></div>
+      </div>
+    </div>
+
+    <div id="1c" style="width:1440px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;gap:12px;align-items:center;"><span style="background:#000000;color:#FFFFFF;font-size:13px;font-weight:700;padding:4px 8px;">1c</span><span style="font-size:14px;color:#34373F;">Blocks — red brand cell, light nav field, graphite account cell</span></div>
+      <div style="background:#FFFFFF;">
+        <header style="height:64px;display:flex;align-items:stretch;border-bottom:2px solid #000000;">
+          <div style="background:#E1242A;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 10px;min-width:220px;box-sizing:border-box;">
+            <span style="font-size:20px;font-weight:800;color:#FFFFFF;letter-spacing:-0.02em;line-height:1;">Pattern</span>
+            <span style="font-size:20px;font-weight:800;color:#450A0A;letter-spacing:-0.02em;line-height:1;">Review</span>
+          </div>
+          <nav style="display:flex;align-items:stretch;flex:1;background:#EDF2F4;padding-left:8px;">
+            <sc-for list="{{ navC }}" as="it" hint-placeholder-count="4">
+              <button onClick="{{ it.onClick }}" style="position:relative;border:0;background:{{ it.bg }};color:{{ it.color }};font-size:14px;font-weight:{{ it.weight }};padding:0 20px;cursor:pointer;display:flex;align-items:center;gap:8px;" style-hover="color:#E1242A;">
+                <span style="font-size:11px;color:#a1b1c4;font-weight:600;">{{ it.num }}</span>
+                {{ it.label }}
+                <sc-if value="{{ it.showCount }}" hint-placeholder-val="{{ false }}"><span style="background:#000000;color:#FFFFFF;font-size:11px;font-weight:700;padding:2px 6px;">{{ queueCount }}</span></sc-if>
+                <span style="position:absolute;left:20px;right:20px;top:0;height:4px;background:{{ it.bar }};"></span>
+              </button>
+            </sc-for>
+          </nav>
+          <div style="background:#34373F;display:flex;align-items:stretch;">
+            <div style="display:flex;align-items:center;gap:12px;padding:0 24px;">
+              <div style="width:32px;height:32px;border:2px solid #F78C85;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">AL</div>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:14px;font-weight:600;color:#FFFFFF;">Alejandro Lopez</span>
+                <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#D1D8E0;">ARB member</span>
+              </div>
+            </div>
+            <button style="border:0;border-left:2px solid #000000;background:#34373F;color:#FFFFFF;font-size:14px;font-weight:600;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;min-width:140px;cursor:pointer;" style-hover="background:#E1242A;" style-active="background:#BD120A;">Sign out<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M9 21H5V3h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg></button>
+          </div>
+        </header>
+        <div style="height:72px;"></div>
+      </div>
+    </div>
+
+    <div style="width:1440px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:14px;color:#34373F;">Current header (reference)</span>
+      <img src="uploads/pasted-1790190318711-0.png" alt="Current header" style="width:100%;display:block;">
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;activeIndicator&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;underline&quot;,&quot;fill&quot;],&quot;default&quot;:&quot;underline&quot;,&quot;tsType&quot;:&quot;'underline'|'fill'&quot;},&quot;showQueueCount&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;queueCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:0,&quot;max&quot;:99,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  state = { active: 0 };
+  renderVals() {
+    const labels = ['Patterns', 'Review queue', 'Users', 'Roles'];
+    const fill = (this.props.activeIndicator ?? 'underline') === 'fill';
+    const showQ = this.props.showQueueCount ?? true;
+    const count = this.props.queueCount ?? 7;
+    const build = (styleFor) => labels.map((label, i) => {
+      const on = i === this.state.active;
+      return { label, num: String(i + 1).padStart(2, '0'), showCount: showQ && i === 1,
+        onClick: () => this.setState({ active: i }), weight: on ? 700 : 500, ...styleFor(on) };
+    });
+    return {
+      queueCount: count,
+      navA: build(on => on
+        ? (fill ? { color: '#FFFFFF', bg: '#450A0A', bar: '#E1242A' } : { color: '#FFFFFF', bg: 'transparent', bar: '#E1242A' })
+        : { color: '#D1D8E0', bg: 'transparent', bar: 'transparent' }),
+      navB: build(on => on
+        ? (fill ? { color: '#FFFFFF', bg: '#34373F', bar: '#E1242A' } : { color: '#E1242A', bg: '#FFFFFF', bar: '#E1242A' })
+        : { color: '#34373F', bg: '#FFFFFF', bar: 'transparent' }),
+      navC: build(on => on
+        ? (fill ? { color: '#000000', bg: '#FFFFFF', bar: '#E1242A' } : { color: '#000000', bg: 'transparent', bar: '#E1242A' })
+        : { color: '#34373F', bg: 'transparent', bar: 'transparent' }),
+    };
+  }
+}
+</script>
+</body>
+</html>
