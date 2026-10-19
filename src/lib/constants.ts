@@ -66,5 +66,22 @@ export const DECISION_LABELS: Record<Decision, string> = {
   changes_requested: 'Request changes',
 };
 
+export const BUSINESS_UNITS = ['international_bu', 'us_bu', 'rd', 'gsq', 'corporate_functions'] as const;
+export type BusinessUnit = (typeof BUSINESS_UNITS)[number];
+export const BUSINESS_UNIT_LABELS: Record<BusinessUnit, string> = {
+  international_bu: 'International BU',
+  us_bu: 'US BU',
+  rd: 'R&D',
+  gsq: 'GSQ',
+  corporate_functions: 'Corporate Functions',
+};
+
+export const COMPONENT_TYPES = ['APP', 'TEC'] as const;
+export type ComponentType = (typeof COMPONENT_TYPES)[number];
+export const COMPONENT_TYPE_LABELS: Record<ComponentType, string> = {
+  APP: 'Application',
+  TEC: 'Technology Component',
+};
+
 export const PAGE_SIZE = 25;
 export const COMMENT_MAX_LENGTH = 4000;

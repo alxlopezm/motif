@@ -104,6 +104,9 @@ p { margin: 0 0 0.75rem; }
 }
 .card > h2:first-child { margin-top: 0; }
 
+.collapsible-summary { padding: 1rem 1.25rem; cursor: pointer; }
+.collapsible-summary h2 { margin: 0; display: inline; }
+
 /* ---- controls --------------------------------------------------------------- */
 input[type='text'], input[type='email'], input[type='password'], input[type='search'], select, textarea {
   font: inherit; color: var(--charcoal); background: var(--white);

@@ -316,6 +316,109 @@ CREATE TRIGGER patt_audit_log_no_truncate
   FOR EACH STATEMENT EXECUTE FUNCTION patt_audit_log_append_only();
 
 -- ---------------------------------------------------------------------------
+-- Initiatives, Technology Components, and their links to Patterns.
+--
+-- A business initiative can use one or more technology components (apps/tech), and can
+-- separately benefit from one or more patterns — letting pattern adoption be analyzed by
+-- business unit. These tables are new and independent of the review workflow above; they
+-- carry no approval status of their own.
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS patt_initiatives (
+  init_initiative_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  init_description text NOT NULL,
+  init_benefited_bu text NOT NULL
+    CHECK (init_benefited_bu = ANY (ARRAY['international_bu'::text, 'us_bu'::text, 'rd'::text, 'gsq'::text, 'corporate_functions'::text])),
+  init_business_sponsor_email text NOT NULL,
+  init_created_at timestamp with time zone NOT NULL DEFAULT now(),
+  init_updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT patt_initiatives_pkey PRIMARY KEY (init_initiative_id)
+);
+
+CREATE INDEX IF NOT EXISTS patt_initiatives_bu_idx ON patt_initiatives (init_benefited_bu);
+
+CREATE TABLE IF NOT EXISTS patt_technology_components (
+  tech_technology_component_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  tech_description text NOT NULL,
+  tech_component_type text NOT NULL
+    CHECK (tech_component_type = ANY (ARRAY['APP'::text, 'TEC'::text])),
+  tech_vendor_name text,
+  tech_created_at timestamp with time zone NOT NULL DEFAULT now(),
+  tech_updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT patt_technology_components_pkey PRIMARY KEY (tech_technology_component_id)
+);
+
+CREATE TABLE IF NOT EXISTS patt_initiative_technologies (
+  inte_initiative_technology_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  inte_initiative_id uuid NOT NULL,
+  inte_technology_component_id uuid NOT NULL,
+  inte_disposition text NOT NULL
+    CHECK (inte_disposition = ANY (ARRAY[
+      'TOLERATE'::text, 'INVEST'::text, 'MIGRATE'::text, 'ELIMINATE'::text,
+      'CONTAINED'::text, 'REPLACED'::text, 'APPROVED'::text, 'NOT APPROVED'::text, 'EXPLORE'::text
+    ])),
+  inte_created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT patt_initiative_technologies_pkey PRIMARY KEY (inte_initiative_technology_id),
+  CONSTRAINT patt_initiative_technologies_inte_initiative_id_fkey
+    FOREIGN KEY (inte_initiative_id) REFERENCES patt_initiatives (init_initiative_id),
+  CONSTRAINT patt_initiative_technologies_inte_technology_component_id_fkey
+    FOREIGN KEY (inte_technology_component_id) REFERENCES patt_technology_components (tech_technology_component_id)
+);
+
+CREATE INDEX IF NOT EXISTS patt_initiative_technologies_initiative_idx
+  ON patt_initiative_technologies (inte_initiative_id);
+CREATE INDEX IF NOT EXISTS patt_initiative_technologies_technology_idx
+  ON patt_initiative_technologies (inte_technology_component_id);
+CREATE UNIQUE INDEX IF NOT EXISTS patt_initiative_technologies_unique_link
+  ON patt_initiative_technologies (inte_initiative_id, inte_technology_component_id);
+
+-- A CHECK constraint can't reference another table, so the disposition's valid set
+-- (which depends on the linked component's tech_component_type) is enforced here instead
+-- of in the CHECK above, which only guards the union of both sets.
+CREATE OR REPLACE FUNCTION patt_initiative_technologies_validate_disposition() RETURNS trigger
+LANGUAGE plpgsql AS $$
+DECLARE
+  comp_type text;
+BEGIN
+  SELECT tech_component_type INTO comp_type
+    FROM patt_technology_components
+   WHERE tech_technology_component_id = NEW.inte_technology_component_id;
+
+  IF comp_type = 'APP' AND NEW.inte_disposition NOT IN ('TOLERATE', 'INVEST', 'MIGRATE', 'ELIMINATE') THEN
+    RAISE EXCEPTION 'Disposition % is not valid for an APP component', NEW.inte_disposition;
+  ELSIF comp_type = 'TEC' AND NEW.inte_disposition NOT IN ('CONTAINED', 'REPLACED', 'APPROVED', 'NOT APPROVED', 'EXPLORE') THEN
+    RAISE EXCEPTION 'Disposition % is not valid for a TEC component', NEW.inte_disposition;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS patt_initiative_technologies_disposition_check ON patt_initiative_technologies;
+CREATE TRIGGER patt_initiative_technologies_disposition_check
+  BEFORE INSERT OR UPDATE ON patt_initiative_technologies
+  FOR EACH ROW EXECUTE FUNCTION patt_initiative_technologies_validate_disposition();
+
+CREATE TABLE IF NOT EXISTS patt_initiative_patterns (
+  inpa_initiative_pattern_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  inpa_initiative_id uuid NOT NULL,
+  inpa_pattern_id uuid NOT NULL,
+  inpa_note text,
+  inpa_created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT patt_initiative_patterns_pkey PRIMARY KEY (inpa_initiative_pattern_id),
+  CONSTRAINT patt_initiative_patterns_inpa_initiative_id_fkey
+    FOREIGN KEY (inpa_initiative_id) REFERENCES patt_initiatives (init_initiative_id),
+  CONSTRAINT patt_initiative_patterns_inpa_pattern_id_fkey
+    FOREIGN KEY (inpa_pattern_id) REFERENCES patt_patterns (patt_pattern_id)
+);
+
+CREATE INDEX IF NOT EXISTS patt_initiative_patterns_initiative_idx
+  ON patt_initiative_patterns (inpa_initiative_id);
+CREATE INDEX IF NOT EXISTS patt_initiative_patterns_pattern_idx
+  ON patt_initiative_patterns (inpa_pattern_id);
+CREATE UNIQUE INDEX IF NOT EXISTS patt_initiative_patterns_unique_link
+  ON patt_initiative_patterns (inpa_initiative_id, inpa_pattern_id);
+
+-- ---------------------------------------------------------------------------
 -- Supabase only: tables in `public` are exposed through the PostgREST API to the
 -- `anon` / `authenticated` roles. Turn on RLS (with no policies = deny) for the two
 -- tables this app owns so password hashes and the audit trail are never reachable that

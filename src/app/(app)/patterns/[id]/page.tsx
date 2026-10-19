@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/session';
 import { getAttributes, getHistory, getPattern } from '@/lib/patterns';
+import { getInitiativesForPattern } from '@/lib/initiatives';
+import { buildPatternGraph } from '@/lib/pattern-graph';
 import { uuidSchema } from '@/lib/validation';
 import {
+  BUSINESS_UNIT_LABELS,
   CATEGORY_LABELS,
   DECISION_LABELS,
   SOURCE_LABELS,
@@ -11,10 +14,14 @@ import {
 } from '@/lib/constants';
 import { canDecide, canPickUp, canRequestReview, canViewHistory } from '@/lib/permissions';
 import { formatDateTime, safeExternalUrl } from '@/lib/format';
+import { archivo } from '@/lib/fonts';
 import { ActionForm } from '@/components/ActionForm';
 import { PatternContent } from '@/components/content/PatternContent';
-import { StatusBadge } from '@/components/Badges';
 import { Tabs, type TabDef } from '@/components/Tabs';
+import { PatternHeader } from '@/components/pattern/PatternHeader';
+import { PatternMetaStrip } from '@/components/pattern/PatternMetaStrip';
+import { RelationshipMap } from '@/components/pattern/RelationshipMap';
+import patternMapStyles from '@/components/pattern/pattern-map.module.css';
 import { pickUpAction, recordDecisionAction, requestReviewAction } from './actions';
 import { DecisionPanel } from './DecisionPanel';
 
@@ -34,9 +41,10 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
 
   const access = { owner: pattern.owner, status: pattern.status };
   const showHistory = canViewHistory(user, access);
-  const [attributes, history] = await Promise.all([
+  const [attributes, history, initiatives] = await Promise.all([
     getAttributes(pattern.id),
     showHistory ? getHistory(pattern.id) : Promise.resolve([]),
+    getInitiativesForPattern(pattern.id),
   ]);
 
   const sourceUrl = safeExternalUrl(pattern.sourceUrl);
@@ -44,56 +52,36 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
   const inferred = attributes.filter((a) => a.method === 'inferred_from_text').length;
   const missing = attributes.filter((a) => a.method === 'missing').length;
   const missingRequired = attributes.filter((a) => a.method === 'missing' && a.isRequired).length;
+  const graph = buildPatternGraph(initiatives);
 
   return (
     <>
-      <div className="page-head">
-        <div>
-          <h1>{pattern.name}</h1>
-          <StatusBadge status={pattern.status} />
-        </div>
-      </div>
-
-      <div className="source-link">
-        <p>
-          This page shows the federated summary only. The full pattern document lives in {sourceName}.
-        </p>
-        {sourceUrl ? (
-          <a className="btn" href={sourceUrl} target="_blank" rel="noopener noreferrer">
-            Open in {sourceName} ↗
-          </a>
-        ) : (
-          <span className="badge method-missing">Source link unavailable</span>
-        )}
-      </div>
-
-      <section className="card" aria-label="Pattern details">
-        <dl className="meta">
-          <div>
-            <dt>Category</dt>
-            <dd>{CATEGORY_LABELS[pattern.category] ?? pattern.category}</dd>
-          </div>
-          <div>
-            <dt>Owner</dt>
-            <dd>{pattern.owner}</dd>
-          </div>
-          <div>
-            <dt>Source system</dt>
-            <dd>{sourceName}</dd>
-          </div>
-          <div>
-            <dt>Source last modified</dt>
-            <dd>{formatDateTime(pattern.sourceLastModified)}</dd>
-          </div>
-          <div>
-            <dt>Last synced</dt>
-            <dd>{formatDateTime(pattern.lastSyncedAt)}</dd>
-          </div>
-          <div>
-            <dt>Status</dt>
-            <dd>{STATUS_LABELS[pattern.status]}</dd>
-          </div>
-        </dl>
+      {/* Redesigned per design/pattern-map/README.md (option 1a, "Relationship map") —
+          replaces the old title/badge header, the dark federated-summary banner, the plain
+          metadata `<dl>`, and the vertical "Initiatives using this pattern" list with a
+          header + metadata strip + apps↔initiatives↔technology relationship map. The source
+          link and the four metadata fields it asked to keep are unchanged in substance
+          (same `sourceUrl`/`sourceName`, same four fields), just restyled. Scoped to its own
+          token set (pattern-map.module.css's `.scope`) so this distinct palette doesn't leak
+          into the sections below, which keep the app's existing "paper" theme. */}
+      <section className={`${patternMapStyles.scope} ${archivo.className}`} aria-label="Pattern overview">
+        <PatternHeader
+          name={pattern.name}
+          categoryLabel={CATEGORY_LABELS[pattern.category] ?? pattern.category}
+          statusLabel={STATUS_LABELS[pattern.status]}
+          sourceName={sourceName}
+          sourceUrl={sourceUrl}
+        />
+        <PatternMetaStrip
+          owner={pattern.owner}
+          sourceName={sourceName}
+          sourceLastModified={formatDateTime(pattern.sourceLastModified)}
+          lastSynced={formatDateTime(pattern.lastSyncedAt)}
+        />
+        <details className={patternMapStyles.collapsible}>
+          <summary className={patternMapStyles.sectionSummary}>What initiative are using it?</summary>
+          <RelationshipMap graph={graph} businessUnitLabels={BUSINESS_UNIT_LABELS} />
+        </details>
       </section>
 
       {canRequestReview(user, access) && (
@@ -137,6 +125,10 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
       )}
 
       <section className="card" aria-label="Pattern content" style={{ padding: 0 }}>
+        <details className="collapsible" open>
+        <summary className="collapsible-summary">
+          <h2>Table of Contents</h2>
+        </summary>
         <Tabs
           tabs={[
             {
@@ -187,6 +179,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
             },
           ] satisfies TabDef[]}
         />
+        </details>
       </section>
 
       {showHistory && (
