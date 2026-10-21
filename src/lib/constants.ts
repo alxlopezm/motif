@@ -2,7 +2,7 @@ export const ROLES = ['pattern_owner', 'ea_reviewer', 'arb_member', 'viewer'] as
 export type Role = (typeof ROLES)[number];
 
 export const PATTERN_STATUSES = [
-  'draft',
+  'authored',
   'review_requested',
   'under_review',
   'approved',
@@ -33,7 +33,7 @@ export const ROLE_LABELS: Record<Role, string> = {
 };
 
 export const STATUS_LABELS: Record<PatternStatus, string> = {
-  draft: 'Draft',
+  authored: 'Authored',
   review_requested: 'Review requested',
   under_review: 'Under review',
   approved: 'Approved',

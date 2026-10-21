@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS patt_patterns (
   patt_source_system text NOT NULL CHECK (patt_source_system = ANY (ARRAY['confluence'::text, 'sharepoint'::text])),
   patt_source_url text NOT NULL,
   patt_source_last_modified timestamp with time zone,
-  patt_approval_status text NOT NULL DEFAULT 'draft'::text CHECK (patt_approval_status = ANY (ARRAY['draft'::text, 'review_requested'::text, 'under_review'::text, 'approved'::text, 'rejected'::text, 'changes_requested'::text])),
+  patt_approval_status text NOT NULL DEFAULT 'authored'::text CHECK (patt_approval_status = ANY (ARRAY['authored'::text, 'review_requested'::text, 'under_review'::text, 'approved'::text, 'rejected'::text, 'changes_requested'::text])),
   patt_last_synced_at timestamp with time zone,
   patt_created_at timestamp with time zone NOT NULL DEFAULT now(),
   patt_updated_at timestamp with time zone NOT NULL DEFAULT now(),
@@ -199,6 +199,42 @@ BEGIN
       ADD CONSTRAINT patt_patterns_patt_source_system_check
       CHECK (patt_source_system = ANY (ARRAY['confluence'::text, 'sharepoint'::text, 'github'::text]));
   END IF;
+END $$;
+
+-- ---------------------------------------------------------------------------
+-- Rename the 'draft' approval status to 'authored' (clearer: the pattern has been authored,
+-- not yet submitted). Migrates any existing rows first, then — same by-definition lookup as
+-- the patt_source_system widening above, since patt_patterns is shared with other systems —
+-- replaces the CHECK constraint and default only if they still mention 'draft'.
+-- ---------------------------------------------------------------------------
+DO $$
+DECLARE
+  existing_name text;
+  needs_replace boolean := false;
+BEGIN
+  SELECT conname INTO existing_name
+    FROM pg_constraint
+   WHERE conrelid = 'patt_patterns'::regclass
+     AND contype = 'c'
+     AND pg_get_constraintdef(oid) LIKE '%patt_approval_status%';
+
+  IF existing_name IS NOT NULL AND pg_get_constraintdef(
+       (SELECT oid FROM pg_constraint WHERE conname = existing_name AND conrelid = 'patt_patterns'::regclass)
+     ) LIKE '%''draft''%' THEN
+    needs_replace := true;
+    -- Drop first so the still-'draft'-only constraint doesn't block migrating the data below.
+    EXECUTE format('ALTER TABLE patt_patterns DROP CONSTRAINT %I', existing_name);
+  END IF;
+
+  UPDATE patt_patterns SET patt_approval_status = 'authored' WHERE patt_approval_status = 'draft';
+
+  IF needs_replace THEN
+    ALTER TABLE patt_patterns
+      ADD CONSTRAINT patt_patterns_patt_approval_status_check
+      CHECK (patt_approval_status = ANY (ARRAY['authored'::text, 'review_requested'::text, 'under_review'::text, 'approved'::text, 'rejected'::text, 'changes_requested'::text]));
+  END IF;
+
+  ALTER TABLE patt_patterns ALTER COLUMN patt_approval_status SET DEFAULT 'authored';
 END $$;
 
 -- ---------------------------------------------------------------------------

@@ -63,7 +63,7 @@ function requireReviewer(actor: Actor): void {
 const staleMessage = (status: PatternStatus) =>
   `This pattern is now "${status.replace(/_/g, ' ')}" and can no longer take this action. Reload the page.`;
 
-/** draft | changes_requested -> review_requested (pattern owner, own pattern only). */
+/** authored | changes_requested -> review_requested (pattern owner, own pattern only). */
 export async function requestReview(actorId: string, patternId: string): Promise<void> {
   await withTransaction(async (tx) => {
     const actor = await loadActor(tx, actorId);

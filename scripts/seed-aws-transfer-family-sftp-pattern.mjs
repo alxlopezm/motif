@@ -250,7 +250,7 @@ try {
       `INSERT INTO patt_patterns
          (patt_name, patt_category, patt_owner, patt_source_system, patt_source_url,
           patt_source_last_modified, patt_last_synced_at, patt_approval_status)
-       VALUES ($1, 'data_integration', $2, 'github', $3, now() - interval '1 day', now() - interval '1 hour', 'draft')
+       VALUES ($1, 'data_integration', $2, 'github', $3, now() - interval '1 day', now() - interval '1 hour', 'authored')
        RETURNING patt_pattern_id`,
       [PATTERN_NAME, PATTERN_OWNER, SOURCE_URL],
     );

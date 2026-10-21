@@ -55,7 +55,7 @@ export default async function PatternsPage({
 
   const statuses: readonly PatternStatus[] = visibleStatuses(user);
   const showAllTabs = statuses.length > 1;
-  const primaryTabs: PatternStatus[] = (['review_requested', 'draft', 'approved'] as PatternStatus[]).filter((s) =>
+  const primaryTabs: PatternStatus[] = (['review_requested', 'authored', 'approved'] as PatternStatus[]).filter((s) =>
     statuses.includes(s),
   );
   const extraTabs = statuses.filter((s) => !primaryTabs.includes(s));
@@ -65,7 +65,7 @@ export default async function PatternsPage({
   const awaitingCount = stats.byStatus.review_requested + stats.byStatus.under_review;
   const awaitingLabel = reviewing ? 'AWAITING REVIEW' : 'IN REVIEW';
   const awaitingSub = reviewing ? 'assigned to you' : user.role === 'pattern_owner' ? 'your patterns' : 'in progress';
-  const draftsSub = reviewing ? 'not submitted' : 'not submitted';
+  const authoredSub = reviewing ? 'not submitted' : 'not submitted';
 
   return (
     <>
@@ -85,7 +85,7 @@ export default async function PatternsPage({
           { label: 'TOTAL PATTERNS', value: stats.total, sub: 'in registry' },
           { label: awaitingLabel, value: awaitingCount, sub: awaitingSub },
           { label: 'APPROVED', value: stats.byStatus.approved, sub: 'published' },
-          { label: 'DRAFTS', value: stats.byStatus.draft, sub: draftsSub },
+          { label: 'AUTHORED', value: stats.byStatus.authored, sub: authoredSub },
         ]}
       />
 
@@ -244,7 +244,7 @@ function ReviewCell({ actor, pattern }: { actor: Actor; pattern: PatternSummary 
   }
 
   const text: Record<PatternStatus, string> = {
-    draft: 'Awaiting submission',
+    authored: 'Awaiting submission',
     review_requested: 'Awaiting reviewer',
     under_review: 'Awaiting reviewer',
     approved: 'Approved · no action',

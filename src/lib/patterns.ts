@@ -220,6 +220,22 @@ export async function getAttributes(patternId: string): Promise<AttributeRow[]> 
   );
 }
 
+export interface AttributeTypeRow {
+  id: string;
+  code: string;
+  name: string;
+}
+
+/** The 7 fixed attribute types, for anything that needs to target one by id (e.g. the
+ * upload feature's section-to-attribute mapping) rather than read a pattern's existing values. */
+export async function getAttributeTypes(): Promise<AttributeTypeRow[]> {
+  return query<AttributeTypeRow>(
+    `SELECT attr_attribute_type_id AS id, attr_code AS code, attr_name AS name
+       FROM patt_attribute_types
+      ORDER BY attr_display_order`,
+  );
+}
+
 export interface HistoryEntry {
   requestId: string;
   requestedAt: Date;

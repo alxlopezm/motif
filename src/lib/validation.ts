@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { COMMENT_MAX_LENGTH, DECISIONS, ROLES } from './constants';
+import { CATEGORIES, COMMENT_MAX_LENGTH, DECISIONS, ROLES } from './constants';
+import { safeExternalUrl } from './format';
 
 export const uuidSchema = z.string().uuid();
 
@@ -49,6 +50,25 @@ export const decisionSchema = z
       });
     }
   });
+
+export const createPatternFromAdfSchema = z.object({
+  name: z.string().trim().min(1, 'Pattern name is required').max(200, 'Pattern name is too long'),
+  category: z.enum(CATEGORIES, { errorMap: () => ({ message: 'Choose a category' }) }),
+  owner: z.string().trim().min(1, 'Owner is required').max(200, 'Owner is too long'),
+  sourceUrl: z
+    .string()
+    .trim()
+    .url('Enter a valid URL')
+    .refine((v) => safeExternalUrl(v) !== null, 'Enter a valid http(s) URL'),
+  sections: z.array(
+    z.object({
+      attributeTypeId: uuidSchema,
+      // Full ADF shape-checking is out of scope — the existing renderer is already lenient
+      // with unknown node shapes, so this just confirms it's a plain object (an array of nodes).
+      content: z.array(z.record(z.unknown())),
+    }),
+  ),
+});
 
 /** Flatten zod issues into { field: message } (first message per field). */
 export function fieldErrors(error: z.ZodError): Record<string, string> {

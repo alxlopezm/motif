@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   serverExternalPackages: ['pg', 'bcryptjs'],
+  // Default is 1MB; a real Confluence ADF export reviewed client-side and submitted as one
+  // JSON payload (pattern-upload feature) can exceed that.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '5mb',
+    },
+  },
   async headers() {
     return [
       {

@@ -2,6 +2,7 @@ import 'server-only';
 import type { Queryable } from './db';
 
 export type AuditAction =
+  | 'pattern.created'
   | 'pattern.review_requested'
   | 'pattern.review_picked_up'
   | 'pattern.decision_recorded'

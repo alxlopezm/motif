@@ -222,7 +222,7 @@ tr:last-child td { border-bottom: 0; }
   display: inline-block; font-size: 0.78rem; font-weight: 700; line-height: 1;
   padding: 0.3rem 0.55rem; border-radius: 3px; border: 1px solid transparent; white-space: nowrap;
 }
-.status-draft { background: var(--surface); color: var(--charcoal); border-color: var(--gray); }
+.status-authored { background: var(--surface); color: var(--charcoal); border-color: var(--gray); }
 .status-review_requested { background: var(--white); color: var(--red-dark); border-color: var(--red-dark); }
 .status-under_review { background: var(--charcoal); color: var(--white); }
 .status-changes_requested { background: var(--tint-light); color: var(--tint-deep); }

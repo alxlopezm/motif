@@ -39,14 +39,14 @@ const ATTRIBUTE_TYPES = [
 
 // [name, category, owner, source, status]
 const PATTERNS = [
-  ['Event-Driven Data Ingestion', 'data_ingestion', 'alice.owner@example.com', 'confluence', 'draft'],
-  ['Secure Web App Baseline', 'web_application', 'Alice Owner', 'sharepoint', 'draft'],
-  ['API-Led Data Integration', 'data_integration', 'bob.other@example.com', 'confluence', 'draft'],
+  ['Event-Driven Data Ingestion', 'data_ingestion', 'alice.owner@example.com', 'confluence', 'authored'],
+  ['Secure Web App Baseline', 'web_application', 'Alice Owner', 'sharepoint', 'authored'],
+  ['API-Led Data Integration', 'data_integration', 'bob.other@example.com', 'confluence', 'authored'],
   ['Serverless Cloud Application', 'cloud_application', 'alice.owner@example.com', 'confluence', 'review_requested'],
   ['Managed Batch Ingestion', 'data_ingestion', 'alice.owner@example.com', 'sharepoint', 'approved'],
   // Demo patterns for the source-mimicking content renderers (see AttributeContent):
-  ['Circuit Breaker for Downstream Calls', 'cloud_application', 'alice.owner@example.com', 'github', 'draft'],
-  ['Event Streaming with Kafka', 'data_integration', 'alice.owner@example.com', 'confluence', 'draft'],
+  ['Circuit Breaker for Downstream Calls', 'cloud_application', 'alice.owner@example.com', 'github', 'authored'],
+  ['Event Streaming with Kafka', 'data_integration', 'alice.owner@example.com', 'confluence', 'authored'],
 ];
 
 // GitHub demo: real Markdown, exercising headings, bold, a link, a list, a table, a fenced code
@@ -263,7 +263,7 @@ try {
         [patternId, ids.pattern_owner],
       );
       await audit(ids.pattern_owner, 'pattern.review_requested', new Date(Date.now() - 2 * 864e5), {
-        from: 'draft', to: 'review_requested', review_request_id: r.rows[0].id,
+        from: 'authored', to: 'review_requested', review_request_id: r.rows[0].id,
       });
     }
 
@@ -282,7 +282,7 @@ try {
         [reqId, ids.ea_reviewer],
       );
       await audit(ids.pattern_owner, 'pattern.review_requested', new Date(Date.now() - 5 * day), {
-        from: 'draft', to: 'review_requested', review_request_id: reqId,
+        from: 'authored', to: 'review_requested', review_request_id: reqId,
       });
       await audit(ids.ea_reviewer, 'pattern.review_picked_up', new Date(Date.now() - 4 * day), {
         from: 'review_requested', to: 'under_review', review_request_id: reqId,

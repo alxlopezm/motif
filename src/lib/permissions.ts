@@ -39,7 +39,7 @@ export function ownerMatchValues(actor: Pick<Actor, 'email' | 'displayName'>): [
   return [normalize(actor.email), normalize(actor.displayName)];
 }
 
-export const REVIEW_REQUESTABLE_STATUSES: readonly PatternStatus[] = ['draft', 'changes_requested'];
+export const REVIEW_REQUESTABLE_STATUSES: readonly PatternStatus[] = ['authored', 'changes_requested'];
 
 export function canView(actor: Actor, p: PatternAccess): boolean {
   if (isReviewer(actor.role)) return true;

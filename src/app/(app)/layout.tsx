@@ -24,7 +24,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const navItems: HeaderNavItem[] = [{ href: '/patterns', label: 'Patterns' }];
   if (reviewing) navItems.push({ href: '/review-queue', label: 'Review queue', count: pendingReviewCount });
   if (canManageUsers(user.role)) {
-    navItems.push({ href: '/admin/users', label: 'Users' }, { href: '/admin/roles', label: 'Roles' });
+    navItems.push(
+      { href: '/admin/users', label: 'Users' },
+      { href: '/admin/roles', label: 'Roles' },
+      { href: '/admin/patterns/new', label: 'Upload pattern' },
+    );
   }
 
   return (
