@@ -334,3 +334,5 @@ details.excerpt blockquote { margin: 0.4rem 0 0; padding: 0.5rem 0.75rem; backgr
 .login-card { width: 100%; max-width: 380px; background: var(--white); border-radius: var(--radius); border-top: 5px solid var(--red); padding: 1.75rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); }
 .login-card .btn { width: 100%; }
 .tagline { font-size: 0.85rem; color: #6b6e77; margin-bottom: 1.25rem; }
+.login-mark { display: flex; justify-content: center; margin-bottom: 1rem; }
+.login-mark img { border-radius: var(--radius); }

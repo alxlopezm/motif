@@ -23,11 +23,14 @@ export default async function LoginPage({
   return (
     <div className="login-wrap">
       <div className="login-card">
-        <h1>Pattern Review</h1>
-        <p className="tagline">AI assists. Humans govern. Approved patterns become enterprise knowledge.</p>
+        <div className="login-mark">
+          <img src="/icon.svg" alt="" width={56} height={56} />
+        </div>
+        <h1>MOTIF - Pattern Review</h1>
+        <p className="tagline">AI assists. Humans govern. Approved patterns become Enterprise knowledge.</p>
         <LoginForm callbackUrl={callbackUrl} />
         <p className="small muted" style={{ marginTop: '1rem', marginBottom: 0 }}>
-          Access is provisioned by the Architecture Review Board.
+          Access is provisioned by Enterprise Architecture Team
         </p>
       </div>
     </div>

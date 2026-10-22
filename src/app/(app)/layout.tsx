@@ -37,8 +37,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <Link className="hdr-brand" href="/patterns">
           <span className="hdr-brand-mark" aria-hidden="true" />
           <span className="hdr-brand-text">
-            <span className="hdr-kicker">Architecture</span>
-            <span className="hdr-title">Pattern Review</span>
+            <span className="hdr-kicker">MOTIF</span>
+            <span className="hdr-title">Architecture Pattern Review</span>
           </span>
         </Link>
 
