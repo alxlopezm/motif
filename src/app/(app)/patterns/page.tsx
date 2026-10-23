@@ -25,7 +25,9 @@ export default async function PatternsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const user = await requireUser();
-  const filters = parseListFilters(await searchParams, user);
+  const spRaw = await searchParams;
+  const filters = parseListFilters(spRaw, user);
+  const view: 'list' | 'cards' = (Array.isArray(spRaw.view) ? spRaw.view[0] : spRaw.view) === 'cards' ? 'cards' : 'list';
   const [{ rows, total, pageSize }, stats] = await Promise.all([
     listPatterns(user, filters),
     getPatternStats(user),
@@ -49,6 +51,14 @@ export default async function PatternsPage({
   const tabHref = (status: PatternStatus | '') => {
     const qs = baseParams();
     if (status) qs.set('status', status);
+    const s = qs.toString();
+    return s ? `/patterns?${s}` : '/patterns';
+  };
+  const viewHref = (v: 'list' | 'cards') => {
+    const qs = baseParams();
+    if (filters.status) qs.set('status', filters.status);
+    if (filters.page > 1) qs.set('page', String(filters.page));
+    if (v === 'cards') qs.set('view', 'cards');
     const s = qs.toString();
     return s ? `/patterns?${s}` : '/patterns';
   };
@@ -143,6 +153,26 @@ export default async function PatternsPage({
                 </option>
               ))}
             </AutoSubmitSelect>
+
+            <div className="view-toggle" role="group" aria-label="View">
+              <Link href={viewHref('list')} className={view === 'list' ? 'active' : ''} aria-current={view === 'list' ? 'true' : undefined} title="List view">
+                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden>
+                  <line x1="3" y1="5" x2="17" y2="5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <line x1="3" y1="15" x2="17" y2="15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+                <span className="sr-only">List view</span>
+              </Link>
+              <Link href={viewHref('cards')} className={view === 'cards' ? 'active' : ''} aria-current={view === 'cards' ? 'true' : undefined} title="Card view">
+                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden>
+                  <rect x="3" y="3" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  <rect x="11" y="3" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  <rect x="3" y="11" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  <rect x="11" y="11" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                </svg>
+                <span className="sr-only">Card view</span>
+              </Link>
+            </div>
           </div>
         </form>
         {hasFilters && (
@@ -152,10 +182,38 @@ export default async function PatternsPage({
         )}
       </div>
 
-      <div className="card table-wrap" style={{ padding: 0 }}>
-        {rows.length === 0 ? (
+      {rows.length === 0 ? (
+        <div className="card">
           <p className="empty">No patterns match.</p>
-        ) : (
+        </div>
+      ) : view === 'cards' ? (
+        <div className="patterns-grid">
+          {rows.map((p) => (
+            <div className="pattern-card" key={p.id}>
+              <div className="pattern-card-top">
+                <StatusBadge status={p.status} />
+                <span className="pattern-category">{CATEGORY_LABELS[p.category] ?? p.category}</span>
+              </div>
+              <Link href={`/patterns/${p.id}`} className="pattern-name">
+                {p.name}
+              </Link>
+              {p.summary && <p className="pattern-desc pattern-card-desc">{p.summary}</p>}
+              <div className="pattern-card-meta">
+                <span>{p.owner}</span>
+                <span className="source-cell">
+                  <span className="bullet" aria-hidden />
+                  {SOURCE_LABELS[p.sourceSystem] ?? p.sourceSystem}
+                </span>
+                <span>{formatDate(p.updatedAt)}</span>
+              </div>
+              <div className="pattern-card-actions">
+                <ReviewCell actor={user} pattern={p} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="card table-wrap" style={{ padding: 0 }}>
           <table className="patterns-table">
             <thead>
               <tr>
@@ -203,8 +261,8 @@ export default async function PatternsPage({
               ))}
             </tbody>
           </table>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="pagination small">
         <span className="muted">
